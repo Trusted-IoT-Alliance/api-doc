@@ -21,6 +21,7 @@
   "homepage": "https://github.com/Trusted-IoT-Alliance/api-doc#readme",
   "dependencies": {
     "apidoc": "^0.17.5",
+    "apidoc-markdown": "^0.2.0",
     "apidoc-plugin-schema": "^0.1.1"
   }
 }
