@@ -1,0 +1,10 @@
+{
+  "name": "TIA API Server",
+  "description": "Trusted IoT Alliance API",
+  "version": "1.0.0",
+  "order": [
+    "RegistrantGroup",
+    "SpecGroup",
+    "RegistryThingGroup"
+  ]
+}
