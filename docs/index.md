@@ -1,19 +1,16 @@
-# TIA API Server v1.0.0
+# Chronicled API Server v2.0.0
 
-Trusted IoT Alliance API
+API docs for Chronicled
 
 - [RegistrantGroup](#registrantgroup)
-	- [Find Registrants](#find-registrants)
 	- [Get a Registrant](#get-a-registrant)
 	- [Create a Registrant](#create-a-registrant)
 	
 - [RegistryThingGroup](#registrythinggroup)
-	- [Find Things](#find-things)
 	- [Read a Thing](#read-a-thing)
 	- [Create Things](#create-things)
 	
 - [SpecGroup](#specgroup)
-	- [Find Specs](#find-specs)
 	- [Read a Spec](#read-a-spec)
 	- [Create Spec](#create-spec)
 	
@@ -21,62 +18,9 @@ Trusted IoT Alliance API
 
 # RegistrantGroup
 
-## Find Registrants
-
-<p>Allows users to view all organizations they have access to</p>
-
-	GET /api/1.0/registrant
-
-### Headers
-
-| Name    | Type      | Description                          |
-|---------|-----------|--------------------------------------|
-| Authorization			| String			|  <p>The authorization token for the request. Should be in the format of &quot;Bearer $JWT&quot;</p>							|
-
-### Parameters
-
-| Name    | Type      | Description                          |
-|---------|-----------|--------------------------------------|
-| blockchain_id			| String			| **optional** <p>Used to find Organizations that have Registrants on a specific blockchain</p>							|
-
-### Examples
-
-Example Usage
-
-```
-curl --request GET \
---url http://discovery.chronicled.com/api/1.0/registrant \
--H 'Authorization: Bearer $JWT' \
-```
-
-### Success Response
-
-Success-Response:
-
-```
-HTTP/1.1 200 OK
-[
-  {
-    "blockchain_ids": ["ethereum-mainnet"]
-    "blockchain_addresses": [
-      "0xc257274276a4e539741ca11b590b9447b26a8051"
-    ]
-    "name": "Apple",
-    "description": "A technology company",
-    "destination_blockchains": [{
-      "blockchain_id": "ethereum-mainnet",
-      "address": "0x048875e897b5877e5cdbec601a0ec3069880fe9f",
-      "is_multi_access": true,
-      "co_owner_addresses": [
-        "0xc257274276a4e539741ca11b590b9447b26a8051"
-      ]
-    }]
-  }
-]
-```
 ## Get a Registrant
 
-<p>Allows users to read an organizations they have access to</p>
+<p>Allows users to read the information about a Registrant they have access to</p>
 
 	GET /api/1.0/registrant/:id
 
@@ -90,7 +34,7 @@ HTTP/1.1 200 OK
 
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
-| id			| String			|  <p>Blockchain address that is used to identify an organization</p>							|
+| id			| String			|  <p>Blockchain address that is used to identify an Registrant</p>							|
 
 ### Examples
 
@@ -138,7 +82,7 @@ HTTP/1.1 400 Bad Request
 ```
 ## Create a Registrant
 
-<p>By supplying an organization_id, a superuser can create an Open Registry Registrant for that organization by supplying the necessary fields</p>
+<p>Allows an authorized user to create a Registrant to register Things on a blockchain by supplying the necessary fields</p>
 
 	POST /api/1.0/registrant
 
@@ -236,80 +180,6 @@ NotAuthorized
 ```
 # RegistryThingGroup
 
-## Find Things
-
-<p>This endpoint is used to find all Thing records that match a specific query</p>
-
-	GET /api/1.0/thing
-
-
-### Examples
-
-Example Usage
-
-```
-curl --request GET \
---url http://discovery.chronicled.com/api/1.0/thing
-```
-
-### Success Response
-
-Success-Response:
-
-```
-HTTP/1.1 200 OK
-[{
- "registrant_address": "0xc257274276a4e539741ca11b590b9447b26a8051",
- "urn_identities": ["urn:protocol:123"],
- "spec_name": "product",
- "thing": {
-   "urn_identities": ["urn:protocol:123"],
-   "properties": {
-     "product": {
-       "title": "Nike Shoes 1",
-       "subtitle": "Cool Shoes"
-     }
-   }
- },
- "spec": {
-   "name": "product",
-   "json_schema": {
-     "type": "object",
-     "properties": {
-       "title": {"type": "string"}
-       "subtitle": {"type": "string"}
-     }
-   }
- }
- "blockchain_records": {
-   "ethereum-mainnet": {
-     "state": "pending",
-     "state_description": "transaction: \"0xb79b7aba96e60d53fa324a5863cc14d9ee2fcdc3fb10bfe0d0195936b764e5c8\"",
-     "transaction_hash": "0xb79b7aba96e60d53fa324a5863cc14d9ee2fcdc3fb10bfe0d0195936b764e5c8",
-     "history": [
-       {
-         "state_description": "transaction: \"0xb79b7aba96e60d53fa324a5863cc14d9ee2fcdc3fb10bfe0d0195936b764e5c8\"",
-         "state": "pending",
-         "date": "2017-04-11T16:57:23.113Z",
-         "transaction_hash": "0xb79b7aba96e60d53fa324a5863cc14d9ee2fcdc3fb10bfe0d0195936b764e5c8",
-         "_id": "58ed0af30f49637f1eb120aa"
-       }
-     ],
-     "explorer_thing_link": "http://explorer.chronicled.org/#/thing/urn:protocol:123",
-     "explorer_transaction_link": "http://explorer.chronicled.org/#/transaction/0xb79b7aba96e60d53fa324a5863cc14d9ee2fcdc3fb10bfe0d0195936b764e5c8"
-   }
- },
- "registrant": {
-   "name": "Apple",
-   "description": "A technology company",
-   "destination_blockchains": [{
-     "blockchain_id": "ethereum-mainnet"
-     "address":"0x123",
-     "is_multi_access": "false"
-   }]
- },
-}]
-```
 ## Read a Thing
 
 <p>This endpoint is used to request all the information available about a Thing by supplying one of the Thing's identifying URN's as the id parameter</p>
@@ -404,7 +274,7 @@ HTTP/1.1 400 Invalid Request
 ```
 ## Create Things
 
-<p>Allows an user with access to an Organization to create a Thing or multiple Things for that Organization. The <code>spec_name</code> and <code>spec_organization_id</code> combination fetches a Spec, whose <code>json_schema</code> field determines what values can be supplied in the <code>properties</code> field of the Thing and the <code>sync</code> parameter determines what fields in <code>properties</code> are synchronized with a Blockchain. See <a href="#api-SpecGroup">Create Spec</a> for more details about the Spec resource</p>
+<p>Allows an user with access to an Registrant to create a Thing or multiple Things for that Registrant. The <code>spec_name</code> fetches a Spec, whose <code>json_schema</code> field determines what values can be supplied in the <code>properties</code> field of the Thing and the <code>sync</code> parameter determines what fields in <code>properties</code> are synchronized with a Blockchain. See <a href="#api-SpecGroup">Create Spec</a> for more details about the Spec resource</p>
 
 	POST /api/1.0/thing
 
@@ -557,89 +427,6 @@ NotAuthorized
 ```
 # SpecGroup
 
-## Find Specs
-
-<p>Allows a user to view all the Specs they have access to</p>
-
-	GET /api/1.0/registrant/:registrant_address/spec
-
-### Headers
-
-| Name    | Type      | Description                          |
-|---------|-----------|--------------------------------------|
-| Authorization			| String			|  <p>The authorization token for the request. Should be in the format of &quot;Bearer $JWT&quot;</p>							|
-
-### Parameters
-
-| Name    | Type      | Description                          |
-|---------|-----------|--------------------------------------|
-| registrant_address			| String			|  <p>The address of the Registrant that the Specs are registered with</p>							|
-
-### Examples
-
-Example Usage
-
-```
-curl --request GET \
---url http://discovery.chronicled.com/api/1.0/registrant/0xc257274276a4e539741ca11b590b9447b26a8051/spec \
--H 'Authorization: Bearer $JWT' \
-```
-
-### Success Response
-
-Success-Response:
-
-```
-HTTP/1.1 200 OK
-[
- {
-   "name": "product",
-   "registrant_address": "0xc257274276a4e539741ca11b590b9447b26a8051",
-   "json_schema": {
-     "type": "object"
-     "properties": {
-       "title": {"type": "string"},
-       "subtitle": {"type": "string"}
-     },
-   },
-   "sync": {
-     "ethereum-mainneet": {
-       "protobuf_json": {
-         "package": "Product",
-         "messages": [{
-           "name": "Product",
-           "fields": [
-             {"rule": "required", "type": "string", "name": "title", "id": 1},
-             {"rule": "required", "type": "string", "name": "subtitle", "id": 2}
-           ]
-         }]
-       }
-     }
-   },
-   "registrant": {
-     "name": "Apple",
-     "description": "A technology company",
-     "destination_blockchains": [{
-       "blockchain_id": "ethereum-mainnet"
-       "address":"0x123",
-       "is_multi_access": "false"
-     }]
-   }
- }
-]
-```
-### Error Response
-
-Error-Response:
-
-```
-HTTP/1.1 404 Not Found
-{
-  "error": "10004",
-  "message": "Not authorized to perform this operation",
-  "detail": "Not Authorized. Entity 'Registry-SpecView', id 'n/a', permission 'find'."
-}
-```
 ## Read a Spec
 
 <p>Allows a user to read a Spec they have access to</p>
@@ -725,7 +512,7 @@ HTTP/1.1 400 Bad Request
 ```
 ## Create Spec
 
-<p>Allows a user with access to an organization to create a Spec for that Organization. The Spec document is used to limit what kind of NewThings a user can create and determine how that NewThings is synchronized with the blockchain. The <code>json_schema</code> field is used to validate the structure of the <code>properties</code> field in all NewThings that are created with that Spec. The <code>sync</code> field is used to determine which blockchains the NewThings will be stored on. One option that can be seen below is the <code>ethereum</code> field. The `ethereum field must be supplied with a protobuf_json to encode that data and, if present, will automatically register the NewThings on the Ethereum blockchain</p>
+<p>Allows a user with access to create a Spec for that Registrant. The Spec document is used to limit what kind of NewThings a user can create and determine how that NewThings is synchronized with the blockchain. The <code>json_schema</code> field is used to validate the structure of the <code>properties</code> field in all NewThings that are created with that Spec. The <code>sync</code> field is used to determine which blockchains the NewThings will be stored on. One option that can be seen below is the <code>ethereum</code> field. The `ethereum field must be supplied with a protobuf_json to encode that data and, if present, will automatically register the NewThings on the Ethereum blockchain</p>
 
 	POST /api/1.0/registrant/:registrant_address/spec
 
@@ -740,7 +527,7 @@ HTTP/1.1 400 Bad Request
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | registrant_address			| String			|  <p>The address of the registrant that the Schema belongs to</p>							|
-| name			| String			|  <p>The name of the Schema registered (must be unique within your organization)</p>							|
+| name			| String			|  <p>The name of the Schema registered (must be unique within your Registrant)</p>							|
 | json_schema			| Object			|  <p>The JSON schema that identifies the properties that Things adhering to this Schema possess</p>							|
 | sync			| Object			|  <p>An object which identifies which properties in the Schema specs will be synchronized with a blockchain</p>							|
 | sync.ethereum-mainnet			| Object			| **optional** <p>An object for identifying properties on the Schema specs that will be synchronized with ethereum-mainnet. Each key in this object identifies the property in the Schema specs that is registered and the type represents that type of value it will be registered as</p>							|
